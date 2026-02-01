@@ -12,7 +12,7 @@ car_data = pd.read_csv(URL)
 st.header('Información de carros')
 
 # Crear un botón en la aplicación Streamlit
-hist_button = st.button('Construir histograma')
+hist_button = st.checkbox('Construir un histograma')
 
 # Lógica a ejecutar cuando se hace clic en el botón
 if hist_button:
@@ -45,4 +45,4 @@ if dispertion_button:
     fig.update_layout(title_text='Relación entre Odómetro y Precio')
 
     # Mostrar el gráfico Plotly
-    fig.show()
+    st.plotly_chart(fig, use_container_width=True)
