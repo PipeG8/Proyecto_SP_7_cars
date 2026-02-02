@@ -1,6 +1,8 @@
 import pandas as pd
 import plotly.graph_objects as go  # Importación de plotly.graph_objects como go
 import streamlit as st
+#liberias para llamar funciones uicacdas en utils 
+from src.utils.data_processing import clean_data 
 
 URL='https://raw.githubusercontent.com/PipeG8/Proyecto_SP_7_cars/refs/heads/main/vehicles_us.csv'
 
@@ -8,6 +10,7 @@ URL='https://raw.githubusercontent.com/PipeG8/Proyecto_SP_7_cars/refs/heads/main
 # Leer los datos del archivo CSV
 car_data = pd.read_csv(URL)
 
+car_data_clean=clean_data(car_data)
 
 st.header('Información de carros')
 
@@ -21,7 +24,7 @@ if hist_button:
 
     # Crear un histograma utilizando plotly.graph_objects
     # Se crea una figura vacía y luego se añade un rastro de histograma
-    fig = go.Figure(data=[go.Histogram(x=car_data['odometer'])])
+    fig = go.Figure(data=[go.Histogram(x=car_data_clean['odometer'])])
 
     # Opcional: Puedes añadir un título al gráfico si lo deseas
     fig.update_layout(title_text='Distribución del Odómetro')
@@ -39,7 +42,7 @@ if dispertion_button:
 
     # Crear un scatter plot utilizando plotly.graph_objects
     # Se crea una figura vacía y luego se añade un rastro de scatter
-    fig = go.Figure(data=[go.Scatter(x=car_data['odometer'], y=car_data['price'], mode='markers')])
+    fig = go.Figure(data=[go.Scatter(x=car_data_clean['odometer'], y=car_data_clean['price'], mode='markers')])
 
     # Opcional: Puedes añadir un título al gráfico si lo deseas
     fig.update_layout(title_text='Relación entre Odómetro y Precio')
