@@ -4,15 +4,38 @@ import streamlit as st
 #liberias para llamar funciones uicacdas en utils 
 from src.utils.data_processing import clean_data 
 
+
+#-------------------------
+#1. Cargar los datos y limpiar los datos con base en la columna model 
+#-------------------------
+
 URL='https://raw.githubusercontent.com/PipeG8/Proyecto_SP_7_cars/refs/heads/main/vehicles_us.csv'
 
-
-# Leer los datos del archivo CSV
 car_data = pd.read_csv(URL)
 
 car_data_clean=clean_data(car_data)
 
+#obtener la lista de tipos de carro 
+
+types=car_data_clean['type'].unique()
+
+#-------------------------
+#2.Titulo y descripción del proyecto 
+#-------------------------
+
 st.header('Información de carros')
+
+st.write('Se obtiene la información de carros por modelo y año asi como la información de su odometro,'
+         'mendiante analisis se filtara y mostrara graficas de comportamiento del grupo de datos mostrado a continuación ')
+
+
+
+tabla_resumen = car_data_clean.head(10) # nos da una breve descripción estadistica del grupo de datos 
+
+st.dataframe(tabla_resumen)
+
+
+st.subheader("Resumen Estadístico de los Datos")
 
 # Crear un botón en la aplicación Streamlit
 hist_button = st.checkbox('Construir un histograma')
