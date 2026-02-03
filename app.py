@@ -30,14 +30,17 @@ st.write('Se obtiene la información de carros por modelo y año asi como la inf
 
 
 
-tabla_resumen = car_data_clean.head(10) # nos da una breve descripción estadistica del grupo de datos 
+tabla_resumen = car_data_clean.head(10) # primeros 10 datos para tener una vista basica de que estamos analizando 
 
 st.dataframe(tabla_resumen)
 
 
 st.subheader("Resumen Estadístico de los Datos")
 
-# Crear un botón en la aplicación Streamlit
+# ----------------------
+#3. Crear un botón en la aplicación Streamlit para construir un historgrama de la columna odometer
+#------------------------
+
 hist_button = st.checkbox('Construir un histograma')
 
 # Lógica a ejecutar cuando se hace clic en el botón
@@ -56,7 +59,11 @@ if hist_button:
     # 'use_container_width=True' ajusta el ancho del gráfico al contenedor
     st.plotly_chart(fig, use_container_width=True)
 
-#crear un boton para apliación streamlit que haga un grafico de dispersion de datos 
+#------------------------
+#4.#crear un boton para apliación streamlit que haga un grafico de dispersion de datos que compare la distancia reccorrida con el precio del coche 
+#------------------------
+
+ 
 dispertion_button = st.button('Construir dispersion')
 
 if dispertion_button:
@@ -72,3 +79,24 @@ if dispertion_button:
 
     # Mostrar el gráfico Plotly
     st.plotly_chart(fig, use_container_width=True)
+
+#-----------------------------
+#5. Se crean las listas de los topics a analizar
+#-----------------------------
+
+
+types=car_data_clean['type'].unique()
+
+conditions=car_data_clean['condition'].unique()
+
+brands=car_data_clean['brand'].unique()
+print(brands)
+print(types)
+print(conditions)
+
+st.write("## Varliables a analizar")
+type_selection= st.selectbox(
+    "Tipo de carro ",types
+)
+
+st.write("Elegiste:", type_selection)
