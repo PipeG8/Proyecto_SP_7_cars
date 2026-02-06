@@ -6,3 +6,5 @@ Este proyecto se hizo siguiendo los siguientes pasos
 3. Se crea un notebook de jupyter para hacer pruebas casilla a casilla de cada una de las funciones con base en el csv obtenido
 4. Se unen todas estas funciones de una manera organizada y documentada en el archvio app.py
 5. Se publica a traves de render obteniendo el siguiente enlace https://proyecto-sp-7-cars-1.onrender.com/
+
+Quedo atengo a cualquier posible mejora para este tipo de tablero o consejo, muchas gracias profe 
