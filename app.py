@@ -15,9 +15,15 @@ car_data = pd.read_csv(URL)
 
 car_data_clean=clean_data(car_data)
 
-#obtener la lista de tipos de carro 
+#Organizar datos cronologicamente a partir de date posted
 
-types=car_data_clean['type'].unique()
+car_data_clean=car_data_clean.sort_values(by='date_posted',ascending=True)
+
+#obtener mes de cada fecha el minimo y el maximo 
+car_data_clean['date_posted']=pd.to_datetime(car_data_clean["date_posted"])
+car_data_clean['month']=car_data_clean['date_posted'].dt.month
+
+
 
 #-------------------------
 #2.Titulo y descripción del proyecto 
@@ -25,9 +31,8 @@ types=car_data_clean['type'].unique()
 
 st.header('Información de carros')
 
-st.write('Se obtiene la información de carros por modelo y año asi como la información de su odometro,'
-         'mendiante analisis se filtara y mostrara graficas de comportamiento del grupo de datos mostrado a continuación ')
-
+st.write('Se obtiene la información de carros por modelo y año, así como la información de su odómetro.'
+         ' Una vez tratados, se procede al análisis; se filtrará y mostrará gráficas de comportamiento del grupo de datos mostrado a continuación')
 
 
 tabla_resumen = car_data_clean.head(10) # primeros 10 datos para tener una vista basica de que estamos analizando 
@@ -97,62 +102,81 @@ brands=car_data_clean['brand'].unique()
 
 variables=car_data_clean.columns.to_list()
 
-st.write("## Varilables a analizar")
+st.write("## Analisis dinamico para la variables de interes a escoger ")
 
 #------------------------
 #6. se crean las ventanas desplegables 
 #........................
 
+
+st.write(
+         "Haciendo uso de la lista de verificación y del slider se puede obtener difentes graficos de barras de acuerdo a lo que se necesite")
+
 variable_1= st.selectbox(
-    "Variable 1 ",variables
+    "Variable a analizar ",variables
 )
 
 st.write("Elegiste:", variable_1)
-
-variable_2= st.selectbox(
-    "Variable 2 ",variables
-)
-
-st.write("Elegiste la marca:", variable_2)
-
-st.write(f"Se analiza la cantidad de carros para la variable {variable_1} y variable 2 {variable_2}, en caso de que muestre error cambia la selección")
-
 
 
 #---------------------
 #7.se crea la tabla para de grupo a analizar 
 #---------------------
-try:
-    analisis = [variable_1, variable_2]
 
+minimo=car_data_clean['month'].min()
+maximo=car_data_clean['month'].max()
+#creación y configuración del slider con base en los meses 
+dates= st.slider("month", minimo,maximo,(minimo,maximo),step=1)
+
+date1=dates[0]
+
+date2=dates[1]
+#este es filtro del dataframe con base en el slider 
+car_data_clean=car_data_clean[(car_data_clean['month']>=date1 )& 
+                              (car_data_clean['month']<=date2)
+                              ] 
+
+try:
+    
     df_var1_var2 = (
         car_data_clean
-        .groupby([variable_1, variable_2])
+        .groupby([variable_1])
         .size()
         .reset_index(name='cantidad_carros')
     )
     
-    st.dataframe(df_var1_var2)
+    st.write(f"Tabla obtenida para la variable {variable_1} ")
+    
+    st.dataframe(df_var1_var2,height=250)
 
-    bar_button=st.button('Construir un grafico de barras')
-
-    if bar_button:
-    # Escribir un mensaje en la aplicación
-        st.write('Creación de un grafico de barras para la selección anterior')
-
-        # Crear un scatter plot utilizando plotly.graph_objects
-        # Se crea una figura vacía y luego se añade un rastro de scatter
-        fig = go.Figure(data=[go.bar(x=df_var1_var2[variable_1], y=df_var1_var2[variable_2], mode='markers')])
-
-        # Opcional: Puedes añadir un título al gráfico si lo deseas
-        fig.update_layout(title_text='Relación entre Odómetro y Precio')
-
-    # Mostrar el gráfico Plotly
-    st.plotly_chart(fig, use_container_width=True)
+  
 except Exception as e:
     st.error(f" Error al cargar los datos: {st(e)}")
     st.error(f"Realiza un analisis con las dimensiones correctas")
 
+    # Escribir un mensaje en la aplicación
+
+st.write(f"Se analiza la cantidad de carros para la variable {variable_1} , entre los meses {date1} y el mes {date2}, obteniendo el siguiente grafico.")
+
+#-------------------
+#creación de grafico de barras
+#..................
 
 
+fig = go.Figure(
+    data=[
+        go.Bar(
+            x=df_var1_var2[variable_1],
+            y=df_var1_var2['cantidad_carros']
+        )
+    ]
+)
+
+fig.update_layout(
+    title_text=f'Cantidad de carros por {variable_1}',
+    xaxis_title=variable_1,
+    yaxis_title='Cantidad de carros'
+)
+
+st.plotly_chart(fig, use_container_width=True)
 
