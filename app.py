@@ -85,18 +85,52 @@ if dispertion_button:
 #-----------------------------
 
 
+
+car_data_clean['brand']=car_data_clean['model'].str.split(' ').str[0]
+
+
 types=car_data_clean['type'].unique()
 
 conditions=car_data_clean['condition'].unique()
 
 brands=car_data_clean['brand'].unique()
-print(brands)
-print(types)
-print(conditions)
 
-st.write("## Varliables a analizar")
-type_selection= st.selectbox(
-    "Tipo de carro ",types
+variables=car_data_clean.columns.to_list()
+
+st.write("## Varilables a analizar")
+
+#------------------------
+#6. se crean las ventanas desplegables 
+#........................
+
+variable_1= st.selectbox(
+    "Variable 1 ",variables
 )
 
-st.write("Elegiste:", type_selection)
+st.write("Elegiste:", variable_1)
+
+variable_2= st.selectbox(
+    "Variable 2 ",variables
+)
+
+st.write("Elegiste la marca:", variable_2)
+
+st.write(f"##fSe analiza la cantidad de carros para la variable {variable_1} y variable 2 {variable_2}")
+
+#---------------------
+#7.se crea la tabla para de grupo a analizar 
+#---------------------
+try:
+    analisis = [variable_1, variable_2]
+
+    tipo_marca = (
+        car_data_clean
+        .groupby([variable_1, variable_2])
+        .size()
+        .reset_index(name='cantidad_carros')
+    )
+
+    st.dataframe(tipo_marca)
+except Exception as e:
+    st.error(f" Error al cargar los datos: {st(e)}")
+    st.error(f"Realiza un analisis con las dimensiones correctas")
