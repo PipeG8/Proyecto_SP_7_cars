@@ -115,7 +115,9 @@ variable_2= st.selectbox(
 
 st.write("Elegiste la marca:", variable_2)
 
-st.write(f"##fSe analiza la cantidad de carros para la variable {variable_1} y variable 2 {variable_2}")
+st.write(f"Se analiza la cantidad de carros para la variable {variable_1} y variable 2 {variable_2}, en caso de que muestre error cambia la selección")
+
+
 
 #---------------------
 #7.se crea la tabla para de grupo a analizar 
@@ -123,14 +125,34 @@ st.write(f"##fSe analiza la cantidad de carros para la variable {variable_1} y v
 try:
     analisis = [variable_1, variable_2]
 
-    tipo_marca = (
+    df_var1_var2 = (
         car_data_clean
         .groupby([variable_1, variable_2])
         .size()
         .reset_index(name='cantidad_carros')
     )
+    
+    st.dataframe(df_var1_var2)
 
-    st.dataframe(tipo_marca)
+    bar_button=st.button('Construir un grafico de barras')
+
+    if bar_button:
+    # Escribir un mensaje en la aplicación
+        st.write('Creación de un grafico de barras para la selección anterior')
+
+        # Crear un scatter plot utilizando plotly.graph_objects
+        # Se crea una figura vacía y luego se añade un rastro de scatter
+        fig = go.Figure(data=[go.bar(x=df_var1_var2[variable_1], y=df_var1_var2[variable_2], mode='markers')])
+
+        # Opcional: Puedes añadir un título al gráfico si lo deseas
+        fig.update_layout(title_text='Relación entre Odómetro y Precio')
+
+    # Mostrar el gráfico Plotly
+    st.plotly_chart(fig, use_container_width=True)
 except Exception as e:
     st.error(f" Error al cargar los datos: {st(e)}")
     st.error(f"Realiza un analisis con las dimensiones correctas")
+
+
+
+
